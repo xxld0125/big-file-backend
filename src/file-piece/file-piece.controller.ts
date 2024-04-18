@@ -1,16 +1,24 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { FilePieceService } from './file-piece.service';
-import path from 'path';
+import { Controller, Get, Injectable, Query, Body } from '@nestjs/common';
+import { FilePieceServiceProvider } from './file-piece.service.provider';
 
-const storageRoot = path.resolve(__dirname, '../node_modules/.cache');
+interface CheckParams {
+  hash: string;
+  index: string;
+}
 
+@Injectable()
 @Controller('file-piece')
 export class FilePieceController {
-  constructor(private readonly filePieceService: FilePieceService) {}
+  constructor(
+    private readonly filePieceServiceProvider: FilePieceServiceProvider,
+  ) {}
+  @Get('/check')
+  async find(@Query() query: CheckParams): Promise<boolean> {
+    const { hash, index } = query;
 
-  @Get('check')
-  async find(@Param() params) {
-    const { hash, index } = params;
-    return await this.filePieceService.isExist({ hash: hash!, storageRoot });
+    const filePieceService =
+      this.filePieceServiceProvider.createFilePieceService(hash);
+
+    return await filePieceService.isExist(+index);
   }
 }

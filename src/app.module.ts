@@ -3,9 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { getConfig } from './utils';
-import { FileSystemServiceService } from './file-system-service/file-system-service.service';
 import { FilePieceModule } from './file-piece/file-piece.module';
-import { FileSystemServiceModule } from './file-system-service/file-system-service.module';
 
 @Module({
   imports: [
@@ -15,9 +13,8 @@ import { FileSystemServiceModule } from './file-system-service/file-system-servi
       load: [getConfig],
     }),
     FilePieceModule,
-    FileSystemServiceModule,
   ],
   controllers: [AppController],
-  providers: [AppService, FileSystemServiceService],
+  providers: [AppService],
 })
 export class AppModule {}

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import path from 'path';
 import { stat, readFile, writeFile, mkdir, readdir } from 'fs/promises';
-import { isValidString } from '../utils/file';
+import { isValidString } from '../../utils/file';
 
 @Injectable()
-export class FileSystemServiceService {
+export class FileSystemService {
   // 检查文件是否存在
-  async isFileExists(filename: string) {
+  async isFileExists(filename: string): Promise<boolean> {
     try {
       // 获取文件状态信息
       const fStat = await stat(filename);
