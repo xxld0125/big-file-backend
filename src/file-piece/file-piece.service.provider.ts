@@ -3,7 +3,7 @@ import * as path from 'path';
 import { FilePieceService } from './file-piece.service';
 import { FileSystemService } from '../common/service/file-system-service.service';
 
-const fileStorageRoot = path.resolve(__dirname, '../node_modules/.cache');
+const fileStorageRoot = path.resolve(__dirname, '../.cache');
 
 @Injectable()
 export class FilePieceServiceProvider {

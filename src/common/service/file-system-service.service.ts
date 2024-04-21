@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import path from 'path';
+import * as path from 'path';
 import { stat, readFile, writeFile, mkdir, readdir } from 'fs/promises';
 import { isValidString } from '../../utils/file';
 
