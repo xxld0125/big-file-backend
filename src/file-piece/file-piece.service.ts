@@ -65,6 +65,9 @@ export class FilePieceService {
     const filename = path.resolve(this.hashDir, COMBINE_FILE_NAME);
     await fileSystemService.combine(sortedPieces, filename);
 
+    // 合并后删除分片文件
+    await fileSystemService.batchDeleteFiles(pieces);
+
     // 返回合并后的文件信息，包括文件数量和哈希值
     return { count: pieces.length, hash: this.hash };
   }

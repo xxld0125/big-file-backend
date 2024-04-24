@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as path from 'path';
-import { stat, readFile, writeFile, mkdir, readdir } from 'fs/promises';
+import { stat, readFile, writeFile, mkdir, readdir, unlink } from 'fs/promises';
 import { isValidString } from '../../utils/file';
 
 @Injectable()
@@ -77,5 +77,14 @@ export class FileSystemService {
     const combinedContent = Buffer.concat(contents);
     // 将合并后的内容写入到指定的文件中
     await this.writeFile(saveAs, combinedContent);
+  }
+
+  // 批量删除文件
+  async batchDeleteFiles(filePaths) {
+    await Promise.all(
+      filePaths.map(async (filePath) => {
+        await unlink(filePath);
+      }),
+    );
   }
 }
