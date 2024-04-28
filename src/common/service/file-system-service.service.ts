@@ -1,6 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import * as path from 'path';
-import { stat, readFile, writeFile, mkdir, readdir, unlink } from 'fs/promises';
+import {
+  stat,
+  readFile,
+  writeFile,
+  mkdir,
+  readdir,
+  unlink,
+  access,
+  lstat,
+  rmdir,
+} from 'fs/promises';
 import { isValidString } from '../../utils/file';
 
 @Injectable()
@@ -79,12 +89,41 @@ export class FileSystemService {
     await this.writeFile(saveAs, combinedContent);
   }
 
-  // 批量删除文件
   async batchDeleteFiles(filePaths) {
     await Promise.all(
       filePaths.map(async (filePath) => {
         await unlink(filePath);
       }),
     );
+  }
+
+  // 批量删除指定目录下的所有文件及文件夹
+  async deleteFolderRecursive(folderPath) {
+    try {
+      // 检查文件夹是否存在
+      await access(folderPath);
+
+      // 读取文件夹中的所有文件和子文件夹
+      const files = await readdir(folderPath);
+
+      // 遍历文件夹中的所有文件和子文件夹
+      for (const file of files) {
+        const curPath = path.join(folderPath, file);
+        const stats = await lstat(curPath);
+
+        // 如果是文件夹，则递归删除文件夹
+        if (stats.isDirectory()) {
+          await this.deleteFolderRecursive(curPath);
+        } else {
+          // 如果是文件，则直接删除文件
+          await unlink(curPath);
+        }
+      }
+
+      // 删除空文件夹
+      await rmdir(folderPath);
+    } catch (error) {
+      console.error('delete folder failed:', error);
+    }
   }
 }

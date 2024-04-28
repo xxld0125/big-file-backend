@@ -20,6 +20,7 @@ export class FilePieceService {
     const { storageRoot, hash } = this;
     return path.resolve(storageRoot, hash);
   }
+
   // 查询当前文件目录, 没有就创建一个
   ensureHashDir() {
     const { hashDir } = this;
@@ -51,7 +52,7 @@ export class FilePieceService {
     const pieces = await fileSystemService.ls(this.hashDir);
     // 用于从文件名中提取出文件序号
     const fn2idx = (filename) => +path.basename(filename);
-    // 过滤出有效的文件分片，并按文件序号从小到大排序
+    // 过滤出有效的文件分片，并按文件序号从小到大排序(按顺序)
     const sortedPieces = pieces
       .filter((r) => isPositiveInter(fn2idx(r)))
       .sort((r1, r2) => fn2idx(r1) - fn2idx(r2));
@@ -70,5 +71,11 @@ export class FilePieceService {
 
     // 返回合并后的文件信息，包括文件数量和哈希值
     return { count: pieces.length, hash: this.hash };
+  }
+
+  async deleteFolderRecursive() {
+    const { fileSystemService } = this;
+    // 获取指定目录下的所有文件及文件夹
+    await fileSystemService.deleteFolderRecursive(this.hashDir);
   }
 }

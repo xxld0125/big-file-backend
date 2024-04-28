@@ -74,4 +74,17 @@ export class FilePieceController {
       return false;
     }
   }
+
+  @Get('/delete')
+  async delete(@Query('hash') hash: string): Promise<boolean> {
+    const filePieceService =
+      this.filePieceServiceProvider.createFilePieceService(hash);
+
+    try {
+      filePieceService.deleteFolderRecursive();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
